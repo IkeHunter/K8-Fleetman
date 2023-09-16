@@ -49,6 +49,18 @@ Start interactive shell inside pod
 kubectl exec -it <pod name> sh
 ```
 
+Get logs on specific pod
+
+```sh
+kubectl logs <pod name>
+```
+
+Get logs and follow
+
+```sh
+kubectl logs -f <pod name>
+```
+
 ## Service Types
 
 ### Pods

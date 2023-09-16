@@ -1,0 +1,114 @@
+### Project Workloads ###
+#########################
+
+# Queue Microservice
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: queue
+spec:
+    selector:
+        matchLabels:
+            app: queue
+    replicas: 1
+    template: # pod template
+        metadata:
+            labels:
+                app: queue
+        spec:
+            containers:
+                - name: queue
+                  image: richardchesterwood/k8s-fleetman-queue:release1
+
+---
+# Position Simulator Microservice
+# This doesn't need a service since it doesn't have frontend or rest api.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: position-simulator
+spec:
+    selector:
+        matchLabels:
+            app: position-simulator
+    replicas: 1
+    template: # pod template
+        metadata:
+            labels:
+                app: position-simulator
+        spec:
+            containers:
+                - name: position-tracker
+                  image: richardchesterwood/k8s-fleetman-position-simulator:release1
+                  env:
+                      - name: SPRING_PROFILES_ACTIVE
+                        value: production-microservice
+
+---
+# Position Tracker Microservice
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: position-tracker
+spec:
+    selector:
+        matchLabels:
+            app: position-tracker
+    replicas: 1
+    template: # pod template
+        metadata:
+            labels:
+                app: position-tracker
+        spec:
+            containers:
+                - name: position-tracker
+                  image: richardchesterwood/k8s-fleetman-position-tracker:release1
+                  env:
+                      - name: SPRING_PROFILES_ACTIVE
+                        value: production-microservice
+
+---
+# API Gateway Microservice
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-gateway
+spec:
+    selector:
+        matchLabels:
+            app: api-gateway
+    replicas: 1
+    template: # pod template
+        metadata:
+            labels:
+                app: api-gateway
+        spec:
+            containers:
+                - name: api-gateway
+                  image: richardchesterwood/k8s-fleetman-api-gateway:release1
+                  env:
+                      - name: SPRING_PROFILES_ACTIVE
+                        value: production-microservice
+
+---
+# Web App Microservice
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: webapp
+spec:
+    selector:
+        matchLabels:
+            app: webapp
+    replicas: 1
+    template: # pod template
+        metadata:
+            labels:
+                app: webapp
+        spec:
+            containers:
+                - name: webapp
+                  image: richardchesterwood/k8s-fleetman-webapp-angular:release1
+                  env:
+                      - name: SPRING_PROFILES_ACTIVE
+                        value: production-microservice

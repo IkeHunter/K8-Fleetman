@@ -1,31 +1,25 @@
-# Services are longer living entities in K8, they have stable IPs.
-# They can also contain multiple containers, volumes, etc, but usually just one
-# container and it's volume.
-# command: kubectl port-forward svc/fleetman-webapp 30080:80
+### Project Services ###
+########################
+
+# Web App Service
 apiVersion: v1
 kind: Service
 metadata:
-    name: fleetman-webapp
+    name: fleetman-webapp # this name is used when making network calls
 
 spec:
-    # Defines the pods going to be represented in service
-    # The service is a network endpoint to connect to (internally or externally)
     selector:
         app: webapp
-        # release: "0-5"
 
     ports:
         - name: http
           port: 80 # external port
-          # targetPort: 80 # the port container exposes
-          # Node ports specify what port is openly accessible. By default,
-          # there is a restriction that ports must be greater than 30000
           nodePort: 30080 # publicly accessible on this port
 
-    type: NodePort # expose port to the outside network
-    # type: ClusterIP # only accessible inside cluster
+    type: NodePort
 
 ---
+# Queue Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -40,4 +34,41 @@ spec:
           port: 8161
           nodePort: 30010
 
+        - name: endpoint
+          port: 61616
+
     type: NodePort
+
+---
+# Position Tracker Service
+apiVersion: v1
+kind: Service
+metadata:
+    name: fleetman-position-tracker
+
+spec:
+    selector:
+        app: position-tracker
+
+    ports:
+        - name: http
+          port: 8080
+
+    type: ClusterIP
+
+---
+# Api Gateway Service
+apiVersion: v1
+kind: Service
+metadata:
+    name: fleetman-api-gateway
+
+spec:
+    selector:
+        app: api-gateway
+
+    ports:
+        - name: http
+          port: 8080
+
+    type: ClusterIP
