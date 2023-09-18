@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolumeClaim # What do we want with the volume
+metadata:
+  name: mongo-pvc
+spec:
+  storageClassName: mylocalstorage # used to bind with pers vol
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume # How are we going to implement volume
+metadata:
+  name: local-storage
+spec:
+  storageClassName: mylocalstorage # used to bind with pvc
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/mongodb-2
+    type: DirectoryOrCreate
+    

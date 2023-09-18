@@ -61,6 +61,18 @@ Get logs and follow
 kubectl logs -f <pod name>
 ```
 
+Get Persistent Volumes
+
+```sh
+kubectl get pv
+```
+
+Get Persistent Volume Claims
+
+```sh
+kubectl get pvc
+```
+
 ## Service Types
 
 ### Pods
@@ -152,4 +164,15 @@ This is a way to organize pods and services into different groups, like organizi
 
 When a namespace is not specified, a service is automatically put into the default namespace.
 
+## Databases and Storage
 
+Volumes in Kubernetes work different than they do in Docker. In Docker, it's enough to simpy declare a `VOLUME` block; however, in Kubernetes, volumes are declared with multiple blocks to enable scalability and separation of tasks.
+
+When creating a database with Kubernetes, one way to do it is to create a service that holds the server responsible for the database - like Mongo or Postgres. Wherever this server stores its data is then used as the mount point to connect to an external storage volume. In the case of Mongo, its data is stored in `/data/db`, so that will be the mount path.
+
+To create a MongoDB database with persistent storage, do the following:
+
+1. Create a Deployment
+2. Create a Service for the deployment
+3. Create a PVC
+4. Create a Persistent Volume
