@@ -77,7 +77,7 @@ kubectl get pvc
 
 ### Pods
 
-Pods are like "cattle": they are ephemeral, expendable, and should be replaceable. 
+Pods are like "cattle": they are ephemeral, expendable, and should be replaceable.
 
 They are defined with at least the following code:
 
@@ -176,3 +176,87 @@ To create a MongoDB database with persistent storage, do the following:
 2. Create a Service for the deployment
 3. Create a PVC
 4. Create a Persistent Volume
+
+## Deploy to the Cloud
+
+* Nodes are run with EC2
+* Master nodes are responsible for running all the nodes in the system (worker nodes).
+* AWS EBS: Elastic Block Storage, used for storage.
+
+### kops vs EKS
+
+* kops is older than EKS, and is part of the original K8 repo
+* EKS is younger, and is a part of AWS. 
+* EKS has become more popular over recent years, especially for projects working in AWS
+* If working in kops, you're responsible for master node. In EKS, amazon manages the master node for you. You can't see or manage the master node directly like you can in kops.
+
+#### Kops -----------
+
+Pros:
+
+* it's well respected and heavily used
+* it's easy to use
+
+Cons:
+
+* you are responsible for managing the master (think notifications at 3am)
+* by default, you only get a single master (you can change this config though)
+* it feels like more work than EKS, it's lower level to the system so more config/customization has to be done (like C++)
+
+#### EKS -----------
+
+Pros:
+
+* it has gained a lot of ground recently with popularity
+* using eksctl is quite simple to use
+* no management of the master node
+* it integrates well with Fargate (serverless compute for containers)
+
+Cons:
+
+* it needs a third party tool to make it usable (eksctl)
+* the GUI is very poor, cant create cluster with it (which is fine if you are mainly on terminal)
+* might feel like you're tied into aws (however, it's still k8, so it's still portable.)
+
+### Pricing
+
+Major cost is the "control plane"
+
+Kops - running cost
+
+* depends on Node Type you choose
+* for a m3.medium, about $600/year
+* LoadBalancer is about $200/year
+* In total, about $800/year
+* this only applies to one master node
+
+EKS - running cost
+
+* a set fee for the entire instance
+* about $876/year
+* this gives multiple masters
+
+## Deploying with Kops
+
+Link to docs: <https://kops.sigs.k8s.io/getting_started/aws/>
+
+### KopsCommands
+
+Get an overview of nodes and control plane number
+
+```sh
+kops get ig --name ${NAME}
+```
+
+Edit instance group
+
+```sh
+kops edit ig nodes-us-east-1a --name ${NAME} # use name of ig
+```
+
+Start instance
+
+```sh
+kops update cluster ${NAME} --yes --admin=87600h # gives unlimited time for admin privleges, change this.
+kops export kubecfg --admin=87600h # also change this h value
+```
