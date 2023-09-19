@@ -260,3 +260,7 @@ Start instance
 kops update cluster ${NAME} --yes --admin=87600h # gives unlimited time for admin privleges, change this.
 kops export kubecfg --admin=87600h # also change this h value
 ```
+
+## Working with cluster
+
+If need the volumes to last after cluster is deleted, make sure to change the "RECLAIM POLICY" for the pv.

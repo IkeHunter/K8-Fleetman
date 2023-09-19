@@ -14,9 +14,10 @@ spec:
     ports:
         - name: http
           port: 80 # external port
-          nodePort: 30080 # publicly accessible on this port
+        #   nodePort: 30080 # publicly accessible on this port
 
-    type: NodePort
+    # type: NodePort
+    type: LoadBalancer
 
 ---
 # Queue Service
@@ -32,12 +33,13 @@ spec:
     ports:
         - name: http
           port: 8161
-          nodePort: 30010
+        #   nodePort: 30010
 
         - name: endpoint
           port: 61616
 
-    type: NodePort
+    # type: NodePort
+    type: ClusterIP
 
 ---
 # Position Tracker Service
