@@ -261,6 +261,46 @@ kops update cluster ${NAME} --yes --admin=87600h # gives unlimited time for admi
 kops export kubecfg --admin=87600h # also change this h value
 ```
 
+Delete instance
+
+```sh
+kops delete cluster ${NAME} --yes
+```
+
+### Restarting Cluster
+
+```sh
+# Get last 2 commands used to set env variables.
+# Look for NAME and KOPS_STATE_STORE
+history | grep export
+
+# Change these numbers to the numbers next to the commands in output
+!17 # rerun NAME
+!18 # rerun KOPS_STATE_STORE
+```
+
+```sh
+# find previous command used to create cluster
+history | grep create
+```
+
+```sh
+# Create command should look something like this
+kops create cluster --zones us-east-1a,us-east-1b,us-east-1c ${NAME}
+```
+
+```sh
+# optionally, edit the instance group config
+kops edit ig --name=${NAME} nodes # this command is shown as output from last command
+```
+
+```sh
+kops update cluster ${NAME} --yes --admin=87600h
+
+kubectl apply -f .
+```
+
+
 ## Working with cluster
 
 If need the volumes to last after cluster is deleted, make sure to change the "RECLAIM POLICY" for the pv.
