@@ -310,3 +310,92 @@ Get pod info:
 ```sh
 kubectl get pods -o wide
 ```
+
+## EKS
+
+### EKS commands
+
+```sh
+# EC2 server
+ssh ec2-user@ec2-52-203-71-6.compute-1.amazonaws.com
+```
+
+Install eksctl
+
+```sh
+curl --silent --location "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv /tmp/eksctl /usr/local/bin/
+```
+
+Update AWS CLI
+
+```sh
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
+
+Sign in with AWS user
+
+```sh
+aws configure
+```
+
+Test install for each service
+
+```sh
+aws --version
+
+eksctl version
+
+kubectl version
+```
+
+Create cluster
+
+```sh
+# Example command
+eksctl create cluster --name fleetman --nodes-min=3
+```
+
+### Setting up EKS
+
+1. Create a new EC2 server with the Amazon Linux 2 AMI, ssh into it
+2. Install eksctl on the ec2 server, optionally update the aws cli.
+3. Install kubectl
+4. In AWS, create a new user for EKS - give permissions for EKS full access (predefined AWS permission). *Note: In the course, a set of permissions were given that were based on eksctl's recommendations (before EKS full access was created), look up their recs for latest info.*
+5. In the ec2 server, run the command to log in with the new user
+6. Optionally, test correct configuration.
+7. Lastly, use eksctl to create new cluster.
+
+### Running K8s in EKS
+
+Setup commands
+
+```sh
+# Change cluster name (and region if applicable)
+eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=fleetman --approve
+
+# Change cluster name
+eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster fleetman --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy --approve  --role-only  --role-name AmazonEKS_EBS_CSI_DriverRole
+
+# Change cluster name
+eksctl create addon --name aws-ebs-csi-driver --cluster fleetman --service-account-role-arn arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/AmazonEKS_EBS_CSI_DriverRole --force
+```
+
+1. Run the setup commands
+2. In files, make sure all images are pulling amd64 versions. Then push to git, and pull down onto ec2 server. Also, make sure all storage resources are pointing to external resources like EBS, etc.
+3. configure any env files
+4. Run the command to deploy with kubectl
+5. Configure domain to link to loadbalancer
+
+### Delete Cluster
+
+```sh
+# change cluster name
+eksctl delete cluster fleetman
+```
+
+1. Run command to delete cluster
+2. Delete volumes created by it
