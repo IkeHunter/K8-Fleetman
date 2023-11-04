@@ -254,9 +254,9 @@ spec:
       storageClassName: cloud-ssd
       # storageClassName: localstorage
       accessModes: [ "ReadWriteOnce" ]
-      # resources:
-      #   requests:
-      #     storage: 31Gi
+      resources:
+        requests:
+          storage: 31Gi
 ---
 
 #
