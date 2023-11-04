@@ -75,9 +75,9 @@ spec:
       # This annotation ensures that fluentd does not get evicted if the node
       # supports critical pod annotation based priority scheme.
       # Note that this does not guarantee admission on the nodes (#40573).
-      annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ''
-        seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
+      # annotations:
+      #   scheduler.alpha.kubernetes.io/critical-pod: ''
+      #   seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
     spec:
       priorityClassName: system-node-critical
       serviceAccountName: fluentd-es
@@ -199,7 +199,7 @@ metadata:
     addonmanager.kubernetes.io/mode: Reconcile
 spec:
   serviceName: elasticsearch-logging
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       k8s-app: elasticsearch-logging
@@ -215,14 +215,12 @@ spec:
       containers:
       - image: k8s.gcr.io/elasticsearch:v6.2.5
         name: elasticsearch-logging
-        resources:
-          # need more cpu upon initialization, therefore burstable class
-          limits:
-            memory: "128Mi"
-            cpu: 1000m
-          requests:
-            memory: "64Mi"
-            cpu: 100m
+        # resources:
+        #   # need more cpu upon initialization, therefore burstable class
+        #   limits:
+        #     cpu: 1000m
+        #   requests:
+        #     cpu: 100m
         ports:
         - containerPort: 9200
           name: db
@@ -253,12 +251,12 @@ spec:
       name: elasticsearch-logging
     spec:
       # IMPORTANT - Name must match name in storage.yml > StorageClass > name
-      # storageClassName: cloud-ssd
-      storageClassName: localstorage
+      storageClassName: cloud-ssd
+      # storageClassName: localstorage
       accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 31Gi
+      # resources:
+      #   requests:
+      #     storage: 31Gi
 ---
 
 #
