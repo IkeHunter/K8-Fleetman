@@ -26,6 +26,25 @@ spec:
 #     path: /mnt/mongodb-2
 #     type: DirectoryOrCreate
 
+# Added to debug elk
+####################
+---
+apiVersion: v1
+kind: PersistentVolume 
+metadata:
+  name: local-storage
+spec:
+  storageClassName: localstorage
+  capacity:
+    storage: 40Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data
+    type: DirectoryOrCreate
+####################
+# End debug
+
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass

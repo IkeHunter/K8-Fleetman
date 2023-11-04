@@ -253,7 +253,8 @@ spec:
       name: elasticsearch-logging
     spec:
       # IMPORTANT - Name must match name in storage.yml > StorageClass > name
-      storageClassName: cloud-ssd
+      # storageClassName: cloud-ssd
+      storageClassName: localstorage
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
