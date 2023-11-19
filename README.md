@@ -399,3 +399,32 @@ eksctl delete cluster fleetman
 
 1. Run command to delete cluster
 2. Delete volumes created by it
+
+
+## Managing a cluster
+
+### Logging
+
+
+### Monitoring
+
+#### Prometheus
+
+Prometheus is used for aggregating data and analytics about the cluster
+
+#### Grafana
+
+Grafana is used for displaying the data in an easily digestable way.
+
+Initial login for grafana is:
+
+* Username: `admin`
+* Password: `prom-operator`
+
+USE Method:
+
+* U: Utilization, how much is it being used
+* S: Saturation, how much is a resource overloaded
+* E: Errors
+
+
